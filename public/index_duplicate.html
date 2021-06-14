@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="/assets/img/logo/logo.svg" />
+
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Web site created using create-react-app" />
+    <link rel="apple-touch-icon" href="/assets/img/logo/logo.svg" />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- CSS here -->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/assets/css/font-awesome.css" />
+    <link rel="stylesheet" href="/assets/css/admin.css" />
+    <link rel="stylesheet" href="/assets/css/bs_leftnavi.css" />
+    <link rel="stylesheet" href="/assets/css/developer.css" />
+    <style>
+        .limited-text {
+            white-space: nowrap;
+            width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+
+    <title>COVID -Super Admin</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs_leftnavi.js"></script>
+    <script>
+        $("#myModal").on("shown.bs.modal", function () {
+            $("#myInput").trigger("focus");
+        });
+    </script>
+</body>
+
+</html>
