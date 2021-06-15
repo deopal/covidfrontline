@@ -88,6 +88,11 @@ import add_Serviceprovider from "./AdminComponents/serviceprovider/add_servicepr
 import view_Serviceprovider from "./AdminComponents/serviceprovider/view_serviceprovider";
 import edit_Serviceprovider from "./AdminComponents/serviceprovider/edit_serviceprovider";
 
+//Contact
+import Contact from "./AdminComponents/serviceprovider/contact/contact";
+import add_Contact from "./AdminComponents/serviceprovider/contact/add_contact";
+import edit_Contact from "./AdminComponents/serviceprovider/contact/edit_contact";
+
 //Volunteers
 
 import AddVolunteers from "./AdminComponents/Volunteers/add_volunteers";
@@ -434,6 +439,21 @@ function Routing() {
 					component={add_Serviceprovider}
 				/>
 				<PrivateRoute path="/serviceprovider" exact component={Serviceprovider} />
+
+
+				{/* contact */}
+
+				<PrivateRoute path="/contact/:id" exact component={Contact} />
+				<PrivateRoute
+					path="/edit_contact/:id"
+					exact
+					component={edit_Contact}
+				/>
+				<PrivateRoute
+					path="/add_contact/:id"
+					exact
+					component={add_Contact}
+				/>
 
 
 				{/****************************** Volunteers Details **************************************************/}
