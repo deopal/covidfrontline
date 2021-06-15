@@ -8,30 +8,36 @@ class AddServiceprovider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user:{},
+      user: {},
       name: "",
       email: "",
       addedby: "",
       contact: "",
-      address_1:"",
-      address_2:"",
-      country:"",
-      city:"",
-      area:"",
-      type:"",
-      website:"",
-      logo:"",
-      product_desc:"",
-      facility_desc:"",
-      aggrement:"",
-      contract:"",
-      volunteer:"",
-      status:"",
-      images:"",
+      address_1: "",
+      address_2: "",
+      country: "",
+      city: "",
+      area: "",
+      type: "",
+      website: "",
+      logo: "",
+      product_desc: "",
+      facility_desc: "",
+      aggrement: "",
+      contract: "",
+      volunteer: "",
+      status: "",
+      images: "",
       data: Date.now(),
-      countrylist:[],
-      citieslist:[],
-      volunteerlist:[],
+      countrylist: [],
+      citieslist: [],
+      volunteerlist: [],
+      hospital:"",
+      vaccine:"",
+      pharma:"",
+      equipment:"",
+      ambulance:"",
+      consultant:"",
       mobile_message: "",
       validError: false,
     };
@@ -39,9 +45,9 @@ class AddServiceprovider extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.setCityName = this.setCityName.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.setcountryandcity=this.setcountryandcity.bind(this);
-    this.logoChange=this.logoChange.bind(this);
-    this.imageChange=this.imageChange.bind(this);
+    this.setcountryandcity = this.setcountryandcity.bind(this);
+    this.logoChange = this.logoChange.bind(this);
+    this.imageChange = this.imageChange.bind(this);
 
     this.validator = new SimpleReactValidator({
       className: "text-danger",
@@ -130,7 +136,7 @@ class AddServiceprovider extends React.Component {
     });
   }
 
-  setcountryandcity(user){
+  setcountryandcity(user) {
     console.log(user);
     this.setState({
       country: user.country,
@@ -142,38 +148,38 @@ class AddServiceprovider extends React.Component {
       .then((res) => {
         const cities = res.data;
         console.log(cities);
-        this.setState({citieslist:cities });
+        this.setState({ citieslist: cities });
       });
   }
 
-  componentDidMount(){
+  componentDidMount() {
     const {
       user: { _id },
     } = isAutheticated();
     axios.get(`${process.env.REACT_APP_BASE_URL}/country/allcountry`).then((res) => {
-        const Countries = res.data;
-        console.log(Countries);
-        this.setState({ countrylist:Countries, loading: true });
-      });
+      const Countries = res.data;
+      console.log(Countries);
+      this.setState({ countrylist: Countries, loading: true });
+    });
     axios.get(`${process.env.REACT_APP_BASE_URL}/volunteers/volunteers/${_id}`).then((res) => {
-        const volunteers = res.data;
-        console.log(volunteers);
-        this.setState({ volunteerlist:volunteers, loading: true });
-      });
+      const volunteers = res.data;
+      console.log(volunteers);
+      this.setState({ volunteerlist: volunteers, loading: true });
+    });
 
-      
 
-      axios.get(`${process.env.REACT_APP_BASE_URL}/admin/update_adminusers/${_id}`).then((res) => {
-        const user = res.data;
-        console.log(user);
-        this.setState({ user, loading: true });
-        this.setState({ country:user.country, city:user.city, loading: true });
-        this.setcountryandcity(user);
-      });
+
+    axios.get(`${process.env.REACT_APP_BASE_URL}/admin/update_adminusers/${_id}`).then((res) => {
+      const user = res.data;
+      console.log(user);
+      this.setState({ user, loading: true });
+      this.setState({ country: user.country, city: user.city, loading: true });
+      this.setcountryandcity(user);
+    });
 
   }
 
-  
+
 
   setCityName(e) {
     console.log(e.target.value);
@@ -187,7 +193,7 @@ class AddServiceprovider extends React.Component {
       .then((res) => {
         const cities = res.data;
         console.log(cities);
-        this.setState({citieslist:cities });
+        this.setState({ citieslist: cities });
       });
   }
 
@@ -207,26 +213,40 @@ class AddServiceprovider extends React.Component {
       const {
         user: { _id },
       } = isAutheticated();
+      let product_type="";
+      if(this.state.hospital)
+      product_type+=this.state.hospital + ",";
+      if(this.state.pharma)
+      product_type+=this.state.pharma + ",";
+      if(this.state.vaccine)
+      product_type+=this.state.vaccine + ",";
+      if(this.state.ambulance)
+      product_type+=this.state.ambulance + ",";
+      if(this.state.consultant)
+      product_type+=this.state.consultant + ",";
+      if(this.state.equipment)
+      product_type+=this.state.equipment;
+      console.log(product_type);
       const menu = {
         party_name: this.state.name,
         email: this.state.email,
         addedby: _id,
         contact: this.state.contact,
-        address1:this.state.address_1,
-        address2:this.state.address_2,
-        country:this.state.country,
-        city:this.state.city,
-        area:this.state.area,
-        party_type:this.state.type,
-        website:this.state.website,
-        logo:this.state.logo,
-        product:this.state.product_desc,
-        facilities:this.state.facility_desc,
-        aggrement_date:this.state.aggrement,
-        contract_terms:this.state.contract,
-        volunteer:this.state.volunteer,
-        status:this.state.status==='active',
-        images:this.state.images
+        address1: this.state.address_1,
+        address2: this.state.address_2,
+        country: this.state.country,
+        city: this.state.city,
+        area: this.state.area,
+        party_type: this.state.type,
+        website: this.state.website,
+        logo: this.state.logo,
+        product: product_type,
+        facilities: this.state.facility_desc,
+        aggrement_date: this.state.aggrement,
+        contract_terms: this.state.contract,
+        volunteer: this.state.volunteer,
+        status: this.state.status === 'active',
+        images: this.state.images
       };
       console.log(menu);
       axios
@@ -244,11 +264,11 @@ class AddServiceprovider extends React.Component {
     }
   }
 
-  
-   loading=<h5 style={{color:'red', margin:'auto'}}>...Uploading</h5>;
+
+  loading = <h5 style={{ color: 'red', margin: 'auto' }}>...Uploading</h5>;
 
 
-   logoChange = event => {
+  logoChange = event => {
     const file = event.target.files[0];
     console.log(file);
 
@@ -264,7 +284,7 @@ class AddServiceprovider extends React.Component {
       async () => {
         const imageURL = await uploadTask.snapshot.ref.getDownloadURL();
         console.log(imageURL);
-        this.setState({logo:imageURL});
+        this.setState({ logo: imageURL });
       }
     );
 
@@ -288,7 +308,7 @@ class AddServiceprovider extends React.Component {
       async () => {
         const imageURL = await uploadTask.snapshot.ref.getDownloadURL();
         console.log(imageURL);
-        this.setState({images:imageURL});
+        this.setState({ images: imageURL });
       }
     );
 
@@ -331,47 +351,8 @@ class AddServiceprovider extends React.Component {
                         )}
                       </div>
                     </div>
-                    <div className="col-lg-12 p-0">
-                      <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0"> Email*</label>
-                        <input
-                          className="form-control col-lg-10"
-                          name="email"
-                          onChange={this.handleChange}
-                          value={this.state.email}
-                          type="text"
-                          onfocus="this.placeholder = 'Menu Name'"
-                          onblur="this.placeholder = ''"
-                          placeholder="email"
-                        />
-                        {this.validator.message(
-                          "Email",
-                          this.state.email,
-                          "required|email"
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-lg-12 p-0">
-                      <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0"> Contact Number*</label>
-                        <input
-                          className="form-control col-lg-10"
-                          name="contact"
-                          onChange={this.handleChange}
-                          value={this.state.contact}
-                          type="number"
-                          onfocus="this.placeholder = 'Menu Name'"
-                          onblur="this.placeholder = ''"
-                          placeholder="Contact number"
-                        />
-                        {this.validator.message(
-                          "Contact",
-                          this.state.contact,
-                          "required|min:10|max:10"
-                        )}
-                        {this.state.mobile_message}
-                      </div>
-                    </div>
+                    
+                    
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
                         <label className="col-lg-2 p-0"> Address Line 1*</label>
@@ -416,7 +397,7 @@ class AddServiceprovider extends React.Component {
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
                         <label className="col-lg-2 p-0">Country*</label>
-                        <input 
+                        <input
                           className="form-control col-lg-10"
                           name="country"
                           onChange={this.setCityName}
@@ -426,7 +407,7 @@ class AddServiceprovider extends React.Component {
                           placeholder="Country"
                           disabled
                         />
-                        
+
                         {this.validator.message(
                           "country",
                           this.state.country,
@@ -447,7 +428,7 @@ class AddServiceprovider extends React.Component {
                           placeholder="City"
                           disabled
                         />
-                        
+
                         {this.validator.message(
                           "city",
                           this.state.city,
@@ -477,31 +458,66 @@ class AddServiceprovider extends React.Component {
                     </div>
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0">Type</label>
-                        <select
-                          className="form-control col-lg-10"
-                          name="type"
-                          onChange={this.handleChange}
-                          value={this.state.type}
-                          onfocus="this.placeholder = 'Menu type'"
-                          onblur="this.placeholder = ''"
-                          placeholder="Type"
-                        >
-                        <option value="" selected disabled hidden>Choose</option>
-                        <option value="Hospital">Hospital</option>
-                        <option value="Pharma">Pharma</option>
-                        <option value="Equipment provider">Equipment provider</option>
-                        <option value="Consultant">Consultant</option>
-                        <option value="Ambulance service">Ambulance service</option>
-                        <option value="Vaccine">Vaccine</option>
-                        <option value="Institution details">Institution details</option>
-                        </select>
+                        <label className="col-lg-2 p-0">Type*</label>
+                        <div className="form-control col-lg-10 h-100">
+                          <div className="row">
+                            <div className="row col-lg-6 col-sm-6 m-auto">
+                              <input
+                                className="ml-2 mr-2"
+                                name="type"
+                                type="radio"
+                                id="indivisual"
+                                onChange={this.handleChange}
+                                value="indivisual"
+                                onfocus="this.placeholder = 'Menu type'"
+                                onblur="this.placeholder = ''"
+                                placeholder="Type"
+                              />
+                              <label for="indivisual">Indivisual</label>
+                            </div>
+                            <div className="row col-lg-6 col-sm-6 m-auto">
+                              <input
+                                className="ml-2 mr-2"
+                                name="type"
+                                type="radio"
+                                id="agency"
+                                onChange={this.handleChange}
+                                value="agency"
+                                onfocus="this.placeholder = 'Menu type'"
+                                onblur="this.placeholder = ''"
+                                placeholder="Type"
+                              />
+                              <label for="agency" >Agency</label>
+                            </div>
+                          </div>
+                        </div>
                         {this.validator.message(
                           "type",
                           this.state.type,
                           "required"
                         )}
-                      
+
+                      </div>
+                    </div>
+                    <div className="col-lg-12 p-0">
+                      <div className="form-group tags-field row m-0">
+                        <label className="col-lg-2 p-0"> Contact Number*</label>
+                        <input
+                          className="form-control col-lg-10"
+                          name="contact"
+                          onChange={this.handleChange}
+                          value={this.state.contact}
+                          type="number"
+                          onfocus="this.placeholder = 'Menu Name'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Contact number"
+                        />
+                        {this.validator.message(
+                          "Contact",
+                          this.state.contact,
+                          "required|min:10|max:10"
+                        )}
+                        {this.state.mobile_message}
                       </div>
                     </div>
                     <div className="col-lg-12 p-0">
@@ -517,7 +533,28 @@ class AddServiceprovider extends React.Component {
                           onblur="this.placeholder = ''"
                           placeholder="Website"
                         />
-                     
+
+                      </div>
+                    </div>
+
+                    <div className="col-lg-12 p-0">
+                      <div className="form-group tags-field row m-0">
+                        <label className="col-lg-2 p-0"> Email*</label>
+                        <input
+                          className="form-control col-lg-10"
+                          name="email"
+                          onChange={this.handleChange}
+                          value={this.state.email}
+                          type="text"
+                          onfocus="this.placeholder = 'Menu Name'"
+                          onblur="this.placeholder = ''"
+                          placeholder="email"
+                        />
+                        {this.validator.message(
+                          "Email",
+                          this.state.email,
+                          "required|email"
+                        )}
                       </div>
                     </div>
 
@@ -532,31 +569,107 @@ class AddServiceprovider extends React.Component {
                           onfocus="this.placeholder = 'Menu logo'"
                           onblur="this.placeholder = ''"
                         />
-                        
+
                       </div>
                     </div>
 
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0">Product/services desciption*</label>
+                        <label className="col-lg-2 p-0">Product and services *</label>
+                        <div  className="form-control col-lg-10 h-100">
+                        <div className="row m-auto">
+                       
                         <input
-                          className="form-control col-lg-10"
+                         className="mr-2"
+                          type="checkbox"
                           name="product_desc"
+                          id="hospital"
                           onChange={this.handleChange}
-                          value={this.state.product_desc}
-                          type="text"
+                          value="hospital"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                        />
+                        <label for="hospital">Hospital</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="consultant"
+                          id="consultant"
+                          onChange={this.handleChange}
+                          value="consultant"
                           onfocus="this.placeholder = 'Menu product_desc'"
                           onblur="this.placeholder = ''"
                           placeholder="Product Description"
                         />
-                        
+                        <label for="consultant">Consultant</label>
+                       </div>
+                       <div className="row m-auto ml-2">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="equipment"
+                          id="equipment"
+                          onChange={this.handleChange}
+                          value="equipment"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                        />
+                        <label for="equipment">Equipment</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="vaccine"
+                          id="vaccine"
+                          onChange={this.handleChange}
+                          value="vaccine"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                        />
+                        <label for="vaccine">Vaccine provider</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="pharma"
+                          id="pharma"
+                          onChange={this.handleChange}
+                          value="pharma"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                        />
+                        <label for="pharma">Pharma</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="ambulance"
+                          id="ambulance"
+                          onChange={this.handleChange}
+                          value="ambulance"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                        />
+                        <label for="ambulance">Ambulance</label>
+                        </div>
+                        </div>
+
                       </div>
                     </div>
 
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
                         <label className="col-lg-2 p-0">Facilities description</label>
-                        <textarea 
+                        <textarea
                           className="form-control col-lg-10"
                           name="product_desc"
                           onChange={this.handleChange}
@@ -566,7 +679,7 @@ class AddServiceprovider extends React.Component {
                           onblur="this.placeholder = ''"
                           placeholder="facilities decription"
                         />
-                       
+
                       </div>
                     </div>
 
@@ -583,7 +696,7 @@ class AddServiceprovider extends React.Component {
                           onblur="this.placeholder = ''"
                           placeholder="aggrement date"
                         />
-                       
+
                       </div>
                     </div>
 
@@ -600,7 +713,7 @@ class AddServiceprovider extends React.Component {
                           onblur="this.placeholder = ''"
                           placeholder="contract t&c"
                         />
-                      
+
                       </div>
                     </div>
 
@@ -616,10 +729,10 @@ class AddServiceprovider extends React.Component {
                           onblur="this.placeholder = ''"
                           placeholder="volunteer"
                         >
-                        <option value="" selected disabled hidden>Choose</option>
-                        {this.state.volunteerlist.map(vol=>{
+                          <option value="" selected disabled hidden>Choose</option>
+                          {this.state.volunteerlist.map(vol => {
                             return <option key={vol.name} value={vol.name}> {vol.name}</option>;
-                        })}
+                          })}
                         </select>
                         {this.validator.message(
                           "volunteer",
@@ -642,9 +755,9 @@ class AddServiceprovider extends React.Component {
                           onblur="this.placeholder = ''"
                           placeholder="status"
                         >
-                        <option value="" selected disabled hidden>Choose</option>
-                        <option value="active">Active</option>
-                        <option value="inactive" >Inactive</option>
+                          <option value="" selected disabled hidden>Choose</option>
+                          <option value="active">Active</option>
+                          <option value="inactive" >Inactive</option>
                         </select>
                         {this.validator.message(
                           "status",
@@ -662,14 +775,14 @@ class AddServiceprovider extends React.Component {
                           name="image"
                           onChange={this.imageChange}
                           value={this.state.image}
-                          type="file"  
+                          type="file"
                           onfocus="this.placeholder = 'Menu image'"
                           onblur="this.placeholder = ''"
                         />
-                       
+
                       </div>
                     </div>
-                    
+
 
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field  row m-0">

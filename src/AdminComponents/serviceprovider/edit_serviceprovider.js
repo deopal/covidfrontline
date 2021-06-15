@@ -33,6 +33,12 @@ class EditServiceprovider extends React.Component {
       countrylist: [],
       citieslist: [],
       volunteerlist: [],
+      hospital:"",
+      vaccine:"",
+      pharma:"",
+      equipment:"",
+      ambulance:"",
+      consultant:"",
       mobile_message: "",
       validError: false,
     };
@@ -152,6 +158,27 @@ class EditServiceprovider extends React.Component {
       .then((res) => {
         console.log(res.data);
         const menu = res.data.data;
+        const product_type=menu.product.split(",");
+        console.log(product_type);
+        let found=product_type.find(name=> name ==="hospital");
+        if(found)
+        this.setState({hospital:"hospital"});
+        found=product_type.find(name=> name ==="pharma");
+        if(found)
+        this.setState({pharma:"pharma"});
+        found=product_type.find(name=> name ==="vaccine");
+        if(found)
+        this.setState({vaccine:"vaccine"});
+        found=product_type.find(name=> name ==="consultant");
+        if(found)
+        this.setState({vaccine:"vaccine"});
+        found=product_type.find(name=> name ==="ambulance");
+        if(found)
+        this.setState({ambulance:"ambulance"});
+        found=product_type.find(name=> name ==="equipment");
+        if(found)
+        this.setState({equipment:"equipment"});
+
         console.log(menu);
         this.setState({
           name: menu.party_name,
@@ -210,9 +237,23 @@ class EditServiceprovider extends React.Component {
   }
 
   handleChange(event) {
+    if(event.target.type === 'checkbox') {
+      if(event.target.checked){
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    }
+    if(!event.target.checked){
+      this.setState({
+        [event.target.name]:"",
+      });
+    }
+    }
+    else{
     this.setState({
       [event.target.name]: event.target.value,
     });
+  }
   }
   onChange(event) {
     this.setState({
@@ -223,7 +264,24 @@ class EditServiceprovider extends React.Component {
     const { id } = this.props.match.params;
 
     event.preventDefault();
+    let product_type="";
+    if(this.state.hospital)
+    product_type+=this.state.hospital + ",";
+    if(this.state.pharma)
+    product_type+=this.state.pharma + ",";
+    if(this.state.vaccine)
+    product_type+=this.state.vaccine + ",";
+    if(this.state.ambulance)
+    product_type+=this.state.ambulance + ",";
+    if(this.state.consultant)
+    product_type+=this.state.consultant + ",";
+    if(this.state.equipment)
+    product_type+=this.state.equipment;
+
+    this.setState({product_desc:product_type});
+
     if (this.validator.allValid()) {
+    
       const menu = {
         party_name: this.state.name,
         email: this.state.email,
@@ -237,7 +295,7 @@ class EditServiceprovider extends React.Component {
         party_type: this.state.type,
         website: this.state.website,
         logo: this.state.logo,
-        product: this.state.product_desc,
+        product: product_type,
         facilities: this.state.facility_desc,
         aggrement_date: this.state.aggrement,
         contract_terms: this.state.contract,
@@ -348,49 +406,8 @@ class EditServiceprovider extends React.Component {
                         )}
                       </div>
                     </div>
-                    <div className="col-lg-12 p-0">
-                      <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0"> Email*</label>
-                        <input
-                          className="form-control col-lg-10"
-                          name="email"
-                          onChange={this.handleChange}
-                          value={this.state.email}
-                          type="text"
-                          onfocus="this.placeholder = 'Menu Name'"
-                          onblur="this.placeholder = ''"
-                          placeholder="email"
-                        />
-                        {this.validator.message(
-                          "Email",
-                          this.state.email,
-                          "required|email"
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-lg-12 p-0">
-                      <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0"> Contact Number*</label>
-                        <input
-                          className="form-control col-lg-10"
-                          name="contact"
-                          onChange={this.handleChange}
-                          value={this.state.contact}
-                          type="number"
-                          minLength="10"
-                          maxLength="10"
-                          onfocus="this.placeholder = 'Menu Name'"
-                          onblur="this.placeholder = ''"
-                          placeholder="Contact number"
-                        />
-                        {this.validator.message(
-                          "Contact",
-                          this.state.contact,
-                          "required|min:10|max:10"
-                        )}
-                        
-                      </div>
-                    </div>
+                    
+                   
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
                         <label className="col-lg-2 p-0"> Address Line 1*</label>
@@ -494,27 +511,44 @@ class EditServiceprovider extends React.Component {
                         )}
                       </div>
                     </div>
+                    
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0">Type</label>
-                        <select
-                          className="form-control col-lg-10"
-                          name="type"
-                          onChange={this.handleChange}
-                          value={this.state.type}
-                          type="text"
-                          onfocus="this.placeholder = 'Menu type'"
-                          onblur="this.placeholder = ''"
-                          placeholder="Type"
-                        >
-                          <option value="Hospital" selected={"Hospital" === this.state.type}>Hospital</option>
-                          <option value="Pharma" selected={"Pharma" === this.state.type}>Pharma</option>
-                          <option value="Equipment provider" selected={"Equipment provider" === this.state.type}>Equipment provider</option>
-                          <option value="Consultant" selected={"Consultant" === this.state.type}>Consultant</option>
-                          <option value="Ambulance service" selected={"Ambulance service" === this.state.type}>Ambulance service</option>
-                          <option value="Vaccine" selected={"Vaccine" === this.state.type}>Vaccine</option>
-                          <option value="Institution details" selected={"Institution details" === this.state.type}>Institution details</option>
-                        </select>
+                        <label className="col-lg-2 p-0">Type*</label>
+                        <div className="form-control col-lg-10 h-100">
+                          <div className="row">
+                            <div className="row col-lg-6 col-sm-6 m-auto">
+                              <input
+                                className="ml-2 mr-2"
+                                name="type"
+                                type="radio"
+                                id="indivisual"
+                                onChange={this.handleChange}
+                                value="indivisual"
+                                onfocus="this.placeholder = 'Menu type'"
+                                onblur="this.placeholder = ''"
+                                placeholder="Type"
+                                checked={this.state.type==="indivisual" ? "checked" : ""}
+                              />
+                              <label for="indivisual">Indivisual</label>
+                            </div>
+                            <div className="row col-lg-6 col-sm-6 m-auto">
+                              <input
+                                className="ml-2 mr-2"
+                                name="type"
+                                type="radio"
+                                id="agency"
+                                onChange={this.handleChange}
+                                value="agency"
+                                onfocus="this.placeholder = 'Menu type'"
+                                onblur="this.placeholder = ''"
+                                placeholder="Type"
+                                checked={this.state.type==="agency" ? "checked" : ""}
+                              />
+                              <label for="agency" >Agency</label>
+                            </div>
+                          </div>
+                        </div>
                         {this.validator.message(
                           "type",
                           this.state.type,
@@ -523,6 +557,31 @@ class EditServiceprovider extends React.Component {
 
                       </div>
                     </div>
+
+                    <div className="col-lg-12 p-0">
+                      <div className="form-group tags-field row m-0">
+                        <label className="col-lg-2 p-0"> Contact Number*</label>
+                        <input
+                          className="form-control col-lg-10"
+                          name="contact"
+                          onChange={this.handleChange}
+                          value={this.state.contact}
+                          type="number"
+                          minLength="10"
+                          maxLength="10"
+                          onfocus="this.placeholder = 'Menu Name'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Contact number"
+                        />
+                        {this.validator.message(
+                          "Contact",
+                          this.state.contact,
+                          "required|min:10|max:10"
+                        )}
+                        
+                      </div>
+                    </div>
+
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
                         <label className="col-lg-2 p-0">Website</label>
@@ -537,6 +596,27 @@ class EditServiceprovider extends React.Component {
                           placeholder="Website"
                         />
 
+                      </div>
+                    </div>
+
+                    <div className="col-lg-12 p-0">
+                      <div className="form-group tags-field row m-0">
+                        <label className="col-lg-2 p-0"> Email*</label>
+                        <input
+                          className="form-control col-lg-10"
+                          name="email"
+                          onChange={this.handleChange}
+                          value={this.state.email}
+                          type="text"
+                          onfocus="this.placeholder = 'Menu Name'"
+                          onblur="this.placeholder = ''"
+                          placeholder="email"
+                        />
+                        {this.validator.message(
+                          "Email",
+                          this.state.email,
+                          "required|email"
+                        )}
                       </div>
                     </div>
 
@@ -559,17 +639,104 @@ class EditServiceprovider extends React.Component {
 
                     <div className="col-lg-12 p-0">
                       <div className="form-group tags-field row m-0">
-                        <label className="col-lg-2 p-0">Product/services desciption*</label>
+                        <label className="col-lg-2 p-0">Product and services *</label>
+                        <div  className="form-control col-lg-10 h-100">
+                        <div className="row m-auto">
+                       
                         <input
-                          className="form-control col-lg-10"
+                         className="mr-2"
+                          type="checkbox"
                           name="product_desc"
+                          id="hospital"
                           onChange={this.handleChange}
-                          value={this.state.product_desc}
-                          type="text"
+                          value="hospital"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          checked={this.state.hospital ? "checked" : ''}
+                        />
+                        <label for="hospital">Hospital</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="consultant"
+                          id="consultant"
+                          onChange={this.handleChange}
+                          value="consultant"
                           onfocus="this.placeholder = 'Menu product_desc'"
                           onblur="this.placeholder = ''"
                           placeholder="Product Description"
+                          checked={this.state.consultant ? "checked" : ''}
                         />
+                        <label for="consultant">Consultant</label>
+                       </div>
+                       <div className="row m-auto ml-2">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="equipment"
+                          id="equipment"
+                          onChange={this.handleChange}
+                          value="equipment"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                          checked={this.state.equipment ? "checked" : ''}
+                        />
+                        <label for="equipment">Equipment</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="vaccine"
+                          id="vaccine"
+                          onChange={this.handleChange}
+                          value="vaccine"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                          checked={this.state.vaccine ? "checked" : ''}
+                        />
+                        <label for="vaccine">Vaccine provider</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="pharma"
+                          id="pharma"
+                          onChange={this.handleChange}
+                          value="pharma"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                          checked={this.state.pharma ? "checked" : ''}
+                        />
+                        <label for="pharma">Pharma</label>
+                        </div>
+                        <div className="row m-auto">
+                        <input
+                         className="mr-2"
+                          type="checkbox"
+                          name="ambulance"
+                          id="ambulance"
+                          onChange={this.handleChange}
+                          value="ambulance"
+                          onfocus="this.placeholder = 'Menu product_desc'"
+                          onblur="this.placeholder = ''"
+                          placeholder="Product Description"
+                          checked={this.state.ambulance}
+                        />
+                        <label for="ambulance">Ambulance</label>
+                        </div>
+                        </div>
+                        {this.validator.message(
+                          "product description",
+                          this.state.product_desc,
+                          "required"
+                        )}
 
                       </div>
                     </div>
