@@ -88,6 +88,14 @@ import add_Serviceprovider from "./AdminComponents/serviceprovider/add_servicepr
 import view_Serviceprovider from "./AdminComponents/serviceprovider/view_serviceprovider";
 import edit_Serviceprovider from "./AdminComponents/serviceprovider/edit_serviceprovider";
 
+//Program manager
+import Add_programManager from "./AdminComponents/program_manager/add_program_manager";
+import Edit_programManager from "./AdminComponents/program_manager/edit_program_manager";
+import programManager from "./AdminComponents/program_manager/program_manager";
+
+//catalog
+import Catalog from "./AdminComponents/serviceprovider/hospital/hospital";
+
 //Contact
 import Contact from "./AdminComponents/serviceprovider/contact/contact";
 import add_Contact from "./AdminComponents/serviceprovider/contact/add_contact";
@@ -414,6 +422,7 @@ function Routing() {
 					component={EditVolunteers}
 				/>
 				<PrivateRoute path="/volunteers" exact component={Volunteers} />
+				
 				{/* Request*/}
 				<PrivateRoute path="/add_request" exact component={AddRequest} />
 				<PrivateRoute path="/edit_request/:_id" exact component={EditRequest} />
@@ -424,6 +433,17 @@ function Routing() {
 					exact
 					component={PatientStaus}
 				/>
+
+
+				{/* Program managers */}
+
+				<PrivateRoute path="/add_program_manager" exact component={Add_programManager} />
+				<PrivateRoute
+					path="/edit_program_manager/:_id"
+					exact
+					component={Edit_programManager}
+				/>
+				<PrivateRoute path="/program_manager" exact component={programManager} />
 
 				{/* serviceprovider */}
 
@@ -439,6 +459,12 @@ function Routing() {
 					component={add_Serviceprovider}
 				/>
 				<PrivateRoute path="/serviceprovider" exact component={Serviceprovider} />
+
+
+				{/* catalog */}
+				<PrivateRoute path="/catalog/:id" exact component={Catalog} />
+
+
 
 
 				{/* contact */}

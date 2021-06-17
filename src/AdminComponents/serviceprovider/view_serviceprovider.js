@@ -9,9 +9,9 @@ class view_Serviceprovider extends React.Component {
 		super(props);
 		this.state = {
 			// description: "",
-			menu:{},
-			aggrement_date:"",
-			loading: false,
+			menu: {},
+			aggrement_date: "",
+			loading: true,
 		};
 	}
 	componentDidMount() {
@@ -20,13 +20,13 @@ class view_Serviceprovider extends React.Component {
 		axios
 			.get(`${process.env.REACT_APP_BASE_URL}/serviceprovider/get/${_id}`)
 			.then((res) => {
-				const menu= res.data.data;
-				const aggre_date=menu.aggrement_date ? new Date(menu.aggrement_date).toLocaleString('en-IN').split(',')[0] :'';
+				const menu = res.data.data;
+				const aggre_date = menu.aggrement_date ? new Date(menu.aggrement_date).toLocaleString('en-IN').split(',')[0] : '';
 				console.log(menu);
 				this.setState({
 					menu,
-					aggrement_date:aggre_date,
-					loading: true,
+					aggrement_date: aggre_date,
+					loading: false,
 				});
 			});
 	}
@@ -37,7 +37,7 @@ class view_Serviceprovider extends React.Component {
 				<div className="admin-wrapper col-12">
 					<div className="admin-content">
 						<div className="admin-head">Service Provider - View</div>
-						{this.state.loading ? (
+						 {!this.state.loading ? (
 							<div className="admin-data">
 								<div className="col-lg-12 p-0 text-right mb-30">
 									<Link to="/serviceprovider">
@@ -48,14 +48,14 @@ class view_Serviceprovider extends React.Component {
 								</div>
 								<div className=" admin-table">
 									<table className="table table-responsive-sm">
-										<tbody > 
+										<tbody >
 											<tr>
 												<td valign="top" >
 													<b>Name :</b>
 												</td>
-												<td style={{textTransform:'capitalize'}}>{this.state.menu.party_name}</td>
-                        </tr>
-                        <tr >
+												<td style={{ textTransform: 'capitalize' }}>{this.state.menu.party_name}</td>
+											</tr>
+											<tr >
 												<td valign="top">
 													<b>Email :</b>
 												</td>
@@ -66,8 +66,8 @@ class view_Serviceprovider extends React.Component {
 													<b>Contact :</b>
 												</td>
 												<td>{this.state.menu.contact}</td>
-                        </tr>
-                        <tr >
+											</tr>
+											<tr >
 												<td valign="top">
 													<b>Website :</b>
 												</td>
@@ -77,9 +77,9 @@ class view_Serviceprovider extends React.Component {
 												<td valign="top" >
 													<b>Adress Line 1 :</b>
 												</td>
-                        <td>{this.state.menu.address1}</td>
-                        </tr>
-                        <tr>
+												<td>{this.state.menu.address1}</td>
+											</tr>
+											<tr>
 												<td valign="top">
 													<b>Address Line 2 :</b>
 												</td>
@@ -90,8 +90,8 @@ class view_Serviceprovider extends React.Component {
 													<b>Country :</b>
 												</td>
 												<td>{this.state.menu.country}</td>
-                        </tr>
-                        <tr >
+											</tr>
+											<tr >
 												<td valign="top">
 													<b>City :</b>
 												</td>
@@ -102,23 +102,23 @@ class view_Serviceprovider extends React.Component {
 													<b>Area :</b>
 												</td>
 												<td>{this.state.menu.area}</td>
-                        </tr><tr >
+											</tr><tr >
 												<td valign="top" >
 													<b>Logo :</b>
 												</td>
-												<td><img src={this.state.menu.logo} style={{width:'30px',height:'30px'}}/></td>
+												<td>{this.state.menu.logo ? <img src={this.state.menu.logo} style={{ width: '30px', height: '30px' }} /> : ''}</td>
 											</tr>
 											<tr >
 												<td valign="top">
 													<b>Category :</b>
 												</td>
 												<td>{this.state.menu.party_type}</td>
-                        </tr>
-                        <tr >
+											</tr>
+											<tr >
 												<td valign="top">
 													<b>Product Desc :</b>
 												</td>
-												<td>{this.state.menu.Product}</td>
+												<td>{this.state.menu.product}</td>
 											</tr>
 											<tr >
 												<td valign="top" >
@@ -132,7 +132,7 @@ class view_Serviceprovider extends React.Component {
 													<b>Contract T&C :</b>
 												</td>
 												<td>{this.state.menu.contract}</td>
-                        </tr><tr >
+											</tr><tr >
 												<td valign="top">
 													<b>Agreement Date :</b>
 												</td>
@@ -140,34 +140,39 @@ class view_Serviceprovider extends React.Component {
 											</tr>
 											<tr className="col-lg-12">
 												<td valign="top" >
-													<b>Volunteer :</b>
+													<b>Manager :</b>
 												</td>
-												<td style={{textTransform:'capitalize'}}>{this.state.menu.volunteer}</td>
-                        </tr>
-                        <tr >
+												<td style={{ textTransform: 'capitalize' }}>{this.state.menu.manager}</td>
+											</tr>
+											<tr >
 												<td valign="top" >
 													<b>Status :</b>
 												</td>
-												<td>{this.state.menu.status==true ? "Active" : "Inactive"}</td>
+												<td>{this.state.menu.status == true ? "Active" : "Inactive"}</td>
 											</tr>
 											<tr >
 												<td valign="top" >
 													<b>Images :</b>
 												</td>
-												<td>{this.state.menu.images ? <img src={this.state.menu.images} alt="" style={{width:'30px',height:'30px'}} /> : ''}</td>
-												
+												<td>{this.state.menu.images ? this.state.menu.images.map((image, i) => {
+													return <img src={image} key={i} alt="" style={{ width: '30px', height: '30px', margin: 'auto', marginRight: '10px' }} />;
+												}) : ''}
+												</td>
+
 											</tr>
-											{/* <tr>
-                        <td valign="top" width="150px;">
-                          <b>Description</b>
-                        </td>
-                        <td>{renderHTML(this.state.description)}</td>
-                      </tr> */}
+											<tr>
+												<td valign="top" >
+													<b>Document :</b>
+												</td>
+												<td><a href={this.state.menu.document[0].image} target="_blank">{this.state.menu.document[0].name}</a> </td>
+
+											</tr>
+											
 										</tbody>
 									</table>
 								</div>
 							</div>
-						) : (
+						 ) : (
 							<div style={{ marginLeft: "500px", marginTop: "200px" }}>
 								{" "}
 								<Loader
@@ -178,7 +183,7 @@ class view_Serviceprovider extends React.Component {
 									timeout={3000} //3 secs
 								/>
 							</div>
-						)}
+						 )}
 					</div>
 				</div>
 			</div>

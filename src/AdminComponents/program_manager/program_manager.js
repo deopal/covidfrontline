@@ -7,12 +7,12 @@ import Loader from "react-loader-spinner";
 import { isAutheticated, signout } from "../../auth";
 import ReactPaginate from "react-paginate";
 const PER_PAGE = 10;
-class ServiceProvider extends React.Component {
+class Program_manager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       menus: [],
-      loading: true,
+      loading: false,
       currentPage: 0,
     };
     this.deleteItem = this.deleteItem.bind(this);
@@ -25,21 +25,19 @@ class ServiceProvider extends React.Component {
     } = isAutheticated();
     console.log(_id);
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/serviceprovider/get`)
+      .get(`${process.env.REACT_APP_BASE_URL}/manager/get/${_id}`)
       .then(res => {
-        const menus = res.data.data;
+        const menus = res.data;
         console.log(menus);
-        this.setState({ menus, loading: false });
-
+        this.setState({ menus, loading: true });
       });
     this.unsubscribe = axios
-      .get(`${process.env.REACT_APP_BASE_URL}/serviceprovider/get`)
+      .get(`${process.env.REACT_APP_BASE_URL}/manager/get/${_id}`)
       .then(res => {
-        const menus = res.data.data;
+        const menus = res.data;
         console.log(menus);
-        this.setState({ menus, loading: false });
+        this.setState({ menus, loading: true });
       });
-      
   }
   handlePageClick({ selected: selectedPage }) {
     this.setState({
@@ -58,9 +56,10 @@ class ServiceProvider extends React.Component {
         console.log(_id);
         axios
           .delete(
-            `${process.env.REACT_APP_BASE_URL}/serviceprovider/delete/${_id}`
+            `${process.env.REACT_APP_BASE_URL}/manager/delete/${_id}`
           )
           .then(res => {
+            console.log(res);
             console.log(res.data);
           });
         this.componentDidMount();
@@ -80,65 +79,110 @@ class ServiceProvider extends React.Component {
             <tr key={index}>
               <td>{index + 1}</td>
 
-              <td style={{textTransform:'capitalize'}}>{menu.party_name}</td>
-              <td>{menu.party_type}</td>
-              <td style={{textTransform:'capitalize'}}>{menu.manager}</td>
+              <td>{menu.name}</td>
+              <td>{menu.contact}</td>
 
+              {menu.status == true ? (
                 <td>
-                <Link to={`/view_serviceprovider/${menu._id}`}>
-                  <span className="btn btn-success"
-                  style={{
-                      borderRadius: "5px",
-                      fontSize: "16px",
-                      padding: "5px 15px",
-                      marginRight: "2px",
-                      backgroundColor: "green",
+                  <span
+                    className="badge badge-pill badge-soft-success font-size-12"
+                    style={{ fontSize: "16px" }}
+                  >
+                    Live
+                  </span>
+                </td>
+              ) : (
+                <td>
+                  <span
+                    className="badge badge-pill badge-soft-success font-size-12"
+                    style={{ fontSize: "16px" }}
+                  >
+                    Suspended
+                  </span>
+                </td>
+              )}
+              <td>
+                {menu.status == true ? (
+                  <button
+                    onClick={e => {
+                      e.preventDefault();
+
+                      axios
+                        .get(
+                          `${process.env.REACT_APP_BASE_URL}/manager/suspenduser/${menu._id}`
+                        )
+                        .then(function (response) {
+                          alert("Program manager is Suspended!");
+                          window.location.reload();
+
+                        })
+                        .catch(function (error) {
+                          // handle error
+                          console.log(error);
+                        });
                     }}
-                  >View</span>
-                </Link>
-                <Link to={`/edit_serviceprovider/${menu._id}`}>
-                  <span className="btn btn-warning">Edit</span>
-                </Link>
-                <span
-                  className="btn btn-danger"
-                  style={{
+                    className="btn btn-success btn-sm  waves-effect waves-light btn-table"
+                    style={{
                       borderRadius: "5px",
                       fontSize: "16px",
                       padding: "5px 15px",
                       marginRight: "2px",
                       backgroundColor: "red",
                     }}
+                  >
+                    Suspend
+                  </button>
+                ) : (
+                  <button
+                    onClick={e => {
+                      e.preventDefault();
+
+                      axios
+                        .get(
+                          `${process.env.REACT_APP_BASE_URL}/manager/makeliveuser/${menu._id}`
+                        )
+                        .then(function (response) {
+                          alert("Program manager is Live!");
+                          window.location.reload();
+
+                        })
+                        .catch(function (error) {
+                          // handle error
+                          console.log(error);
+                        });
+                    }}
+                    className="btn btn-success btn-sm  waves-effect waves-light btn-table "
+                    style={{
+                      borderRadius: "5px",
+                      fontSize: "16px",
+                      padding: "5px 15px",
+                      marginRight: "2px",
+                    }}
+                  >
+                    Make Live
+                  </button>
+                )}
+                <span
+                  className="btn"
                   onClick={this.deleteItem.bind(this, menu._id)}
                 >
                   Delete
                 </span>
-
-                <Link to={`/contact/${menu._id}`}>
-                  <span className="btn btn-primary"
-                  style={{
-                      borderRadius: "5px",
-                      fontSize: "16px",
-                      padding: "5px 15px",
-                      marginRight: "2px",
-                      backgroundColor: "blue",
-                    }}
-                  >Contacts</span>
+                <Link to={`/edit_program_manager/${menu._id}`}>
+                  <span className="btn">Edit</span>
                 </Link>
-
-                <Link to={`/catalog/${menu._id}`}>
-                  <span className="btn btn-success"
-                  style={{
-                      borderRadius: "5px",
-                      fontSize: "16px",
-                      padding: "5px 15px",
-                      marginRight: "2px",
-                      backgroundColor: "green",
-                    }}
-                  >Catalog</span>
-                </Link>
-                
               </td>
-             
+              {/* <td>
+                <Link to={`/edit_adminuser/${menu._id}`}>
+                <span className="btn">Edit</span>
+              </Link>
+                <span
+                  className="btn"
+                  onClick={this.deleteItem.bind(this, menu._id)}
+                >
+                  Delete
+                </span>
+              </td> */}
             </tr>
           </>
         );
@@ -152,11 +196,11 @@ class ServiceProvider extends React.Component {
         <Sidebar></Sidebar>
         <div className="admin-wrapper col-12">
           <div className="admin-content">
-            <div className="admin-head">Service providers</div>
-            {!this.state.loading ? (
+            <div className="admin-head">Program managers</div>
+            {/* {this.state.loading ? ( */}
             <div className="admin-data">
               <div className="col-lg-12 p-0 text-right mb-30">
-                <Link to="/add_serviceprovider">
+                <Link to="/add_program_manager">
                   <button className="button button-contactForm boxed-btn">
                     + Add New
                   </button>
@@ -168,8 +212,10 @@ class ServiceProvider extends React.Component {
                     <tr>
                       <th>S.No</th>
                       <th>Name</th>
-                      <th>Category</th>
-                      <th>Manager</th>
+
+                      <th>contact</th>
+
+                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -190,7 +236,7 @@ class ServiceProvider extends React.Component {
                 />
               </div>
             </div>
-            ) : (
+            {/* ) : (
               <div style={{ marginLeft: "500px", marginTop: "200px" }}>
                 {" "}
                 <Loader
@@ -201,7 +247,7 @@ class ServiceProvider extends React.Component {
                   timeout={3000} //3 secs
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -209,4 +255,4 @@ class ServiceProvider extends React.Component {
   }
 }
 
-export default ServiceProvider;
+export default Program_manager;
